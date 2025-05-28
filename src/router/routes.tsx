@@ -7,13 +7,12 @@ import { SignUp } from '@/pages/auth/sign-up';
 import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
-  
   {
     path: '/',
     element: <AppLayout />,
     children: [
       { path: '/Dashboard', element: <Dashboard /> },
-      { path: '/Orders', element: <Orders /> }
+      { path: '/Orders', element: <Orders /> },
     ],
   },
   {
@@ -24,5 +23,4 @@ export const router = createBrowserRouter([
       { path: '/sign-up', element: <SignUp /> },
     ],
   },
-  
 ]);
