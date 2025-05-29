@@ -10,12 +10,12 @@ export function OrdertableRow() {
       <TableCell>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant='outline' className="p-2.5">
+            <Button variant="outline" className="p-2.5">
               <Search className="h-3 w-3" />
               <span className="sr-only">Detalhes do pedido</span>
             </Button>
           </DialogTrigger>
-          <OrderDetails/>
+          <OrderDetails />
         </Dialog>
       </TableCell>
       <TableCell className="font-mono text-xs font-medium">
@@ -31,13 +31,13 @@ export function OrdertableRow() {
       <TableCell className="font-medium">Matheus Gama</TableCell>
       <TableCell className="font-medium">R$149,90</TableCell>
       <TableCell>
-        <Button variant='outline' className="p-2.5">
+        <Button variant="outline" className="p-2.5">
           <ArrowRight className="mr-2 h-3 w-3" />
           Aprovar
         </Button>
       </TableCell>
       <TableCell>
-        <Button variant='ghost' className="p-2.5">
+        <Button variant="ghost" className="p-2.5">
           <X className="mr-2 h-3 w-3" />
           Cancelar
         </Button>
