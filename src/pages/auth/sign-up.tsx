@@ -7,13 +7,15 @@ import * as z from 'zod';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { registerRestaurant } from '@/api/register-restaurant';
 
 const signUpForm = z.object({
   restaurantName: z
     .string()
     .min(1, { message: 'Campo com o nome do restaurante vazio' }),
   managerName: z.string().min(1, { message: 'Campo com o nome do dono vazio' }),
-  phoneNumber: z.string().min(11, { message: 'Número de telefone inválido.' }),
+  phone: z.string().min(11, { message: 'Número de telefone inválido.' }),
   email: z
     .string()
     .min(1, { message: 'Campo de e-mail vazio.' })
@@ -32,15 +34,23 @@ export function SignUp() {
   } = useForm<SignUpForm>({
     resolver: zodResolver(signUpForm),
   });
+
+  const { mutateAsync: registerRestaurantFn } = useMutation({
+    mutationFn: registerRestaurant,
+  });
   async function handleSignUp(data: SignUpForm) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log(data);
-    console.log(errors);
+    await registerRestaurantFn({
+      email: data.email,
+      restaurantName: data.restaurantName,
+      managerName: data.managerName,
+      phone: data.phone,
+    });
 
     toast.success('Restaurante cadastrado com sucesso.', {
       action: {
         label: 'Login',
-        onClick: () => navigate('/sign-in'),
+        onClick: () => navigate(`/sign-in?email=${data.email}`),
       },
     });
   }
@@ -56,8 +66,8 @@ export function SignUp() {
         case 'managerName':
           toast.error(errors.managerName?.message);
           break;
-        case 'phoneNumber':
-          toast.error(errors.phoneNumber?.message);
+        case 'phone':
+          toast.error(errors.phone?.message);
           break;
         case 'email':
           toast.error(errors.email?.message);
@@ -126,7 +136,7 @@ export function SignUp() {
                 id="phoneNumber"
                 type="tel"
                 placeholder="Digite seu número de celular"
-                {...register('phoneNumber')}
+                {...register('phone')}
               />
             </div>
             <Button disabled={isSubmitting} type="submit" className="w-full">
