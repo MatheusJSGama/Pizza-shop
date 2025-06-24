@@ -8,8 +8,35 @@ import {
 import { OrdertableRow } from './order-table-row';
 import { OrderTableFilters } from './order-table-filters';
 import { Pagination } from '@/components/pagination';
+import { useQuery } from '@tanstack/react-query';
+import { getOrders } from '@/api/get-orders';
+import { useSearchParams } from 'react-router-dom';
+import { z } from 'zod';
 
 export function Orders() {
+
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const pageIndex = z.coerce.number()
+    .transform(page => page -1)
+    .parse(searchParams.get('page') ?? '1')
+
+  const { data: result } = useQuery({
+    queryFn: ()=> getOrders({pageIndex}),
+    queryKey: ['orders', pageIndex]
+  })
+
+  console.log(result);
+  
+
+  function handlePaginate(pageIndex: number){
+    setSearchParams((state) => {
+      state.set('page', (pageIndex + 1).toString())
+
+      return state
+    })
+  }
+
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -32,13 +59,24 @@ export function Orders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Array.from({ length: 10 }).map((_, i) => {
-                  return <OrdertableRow key={i} />;
+                {result && result.orders.map(order => {
+                  return (
+                    <OrdertableRow 
+                      key={order.orderId} 
+                      createdAt={order.createdAt}
+                      customerName={order.customerName}
+                      orderId={order.orderId}
+                      status={order.status}
+                      total={order.total}
+                    />
+                  )
                 })}
               </TableBody>
             </Table>
           </div>
-          <Pagination pageIndex={0} totalCount={105} perPage={10} />
+          {result && (
+            <Pagination pageIndex={result.meta.pageIndex} totalCount={result.meta.totalCount} perPage={result.meta.perPage} onPageChange={handlePaginate} />
+          )}
         </div>
       </div>
     </>

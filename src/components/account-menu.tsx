@@ -1,5 +1,5 @@
-import { Building, ChevronDown, LogOut } from 'lucide-react';
-import { Button } from './ui/button';
+import { Building, ChevronDown, LogOut } from "lucide-react";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuLabel,
@@ -7,34 +7,44 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from './ui/dropdown-menu';
-import { useQuery } from '@tanstack/react-query';
-import { getProfile } from '@/api/get-profile';
-import { getMenegedRestaurant } from '@/api/get-managed-restaurant';
-import { Skeleton } from './ui/skeleton';
-import { Dialog, DialogTrigger } from './ui/dialog';
-import { StoreProfileDialog } from './store-profile-dialog';
+} from "./ui/dropdown-menu";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getProfile } from "@/api/get-profile";
+import { getMenegedRestaurant } from "@/api/get-managed-restaurant";
+import { Skeleton } from "./ui/skeleton";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import { StoreProfileDialog } from "./store-profile-dialog";
+import { signOut } from "@/api/sign-out";
+import { useNavigate } from "react-router-dom";
 
 export function AccountMenu() {
+  const navigate = useNavigate();
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryFn: getProfile,
-    queryKey: ['profile'],
+    queryKey: ["profile"],
     staleTime: Infinity,
   });
 
   const { data: managedRestaurant, isLoading: isLoadingManagedRestaurant } =
     useQuery({
       queryFn: getMenegedRestaurant,
-      queryKey: ['menaged-restaurant'],
+      queryKey: ["menaged-restaurant"],
       staleTime: Infinity,
     });
+
+  const { mutateAsync: signOutFn, isPending: isSigningOut } = useMutation({
+    mutationFn: signOut,
+    onSuccess: () => {
+      navigate("/sign-in", { replace: true });
+    },
+  });
 
   return (
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant={'outline'}
+            variant={"outline"}
             className="flex items-center gap-2 select-none"
           >
             {isLoadingManagedRestaurant ? (
@@ -68,9 +78,15 @@ export function AccountMenu() {
               <span>Perfil da loja</span>
             </DropdownMenuItem>
           </DialogTrigger>
-          <DropdownMenuItem className="text-rose-500 dark:text-rose-400">
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Sair</span>
+          <DropdownMenuItem
+            asChild
+            className="text-rose-500 dark:text-rose-400"
+            disabled={isSigningOut}
+          >
+            <button onClick={()=> signOutFn()} className="w-full">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sair</span>
+            </button>
           </DropdownMenuItem>
         </DropdownMenuContent>
         <StoreProfileDialog />

@@ -24,7 +24,7 @@ import { queryClient } from '@/lib/react-query';
 
 const storeProfileSchema = z.object({
   name: z.string().min(1),
-  description: z.string(),
+  description: z.string().nullable()
 });
 
 type StoreProfileSchema = z.infer<typeof storeProfileSchema>;
@@ -36,14 +36,12 @@ export function StoreProfileDialog() {
     staleTime: Infinity,
   });
 
-  const { mutateAsync: updateRestaurantProfile } = useMutation({
-    mutationFn: updateProfile,
-    onSuccess(_, { name, description }) {
-      const cached = queryClient.getQueryData<GetMenegedRestaurantResponse>([
+  function updateManagedRestaurantCache({name, description}: StoreProfileSchema){ 
+    const cached = queryClient.getQueryData<GetMenegedRestaurantResponse>([
         'menaged-restaurant',
       ]);
       if (cached) {
-        queryClient.setQueryData<GetMenegedRestaurantResponse>(
+        queryClient.setQueryData<GetMenegedRestaurantResponse>( // Atualiza os valores novos vindos do input direto no cache
           ['menaged-restaurant'],
           {
             ...cached,
@@ -52,7 +50,38 @@ export function StoreProfileDialog() {
           },
         );
       }
+
+      return { cached }
+  }
+
+  const { mutateAsync: updateRestaurantProfile } = useMutation({
+    mutationFn: updateProfile,
+    onMutate({name, description}){ // O onMutate atualiza os dados enviados do input na hora, não espera dar sucesso como no onSuccess 
+     const { cached } = updateManagedRestaurantCache({name, description}) 
+
+      return { previousProfile: cached }
     },
+    onError(_error, _variables, context) { // pega o cached que é o valor antes da alteração e caso de erro volta para o valor que era antes
+      if(context?.previousProfile){
+        updateManagedRestaurantCache(context.previousProfile)
+      }
+    },
+    // onSuccess(_, { name, description }) {
+    //   const cached = queryClient.getQueryData<GetMenegedRestaurantResponse>([ //Pega a informção atual que já existe dentro do cache
+    //     'menaged-restaurant', 
+    //   ]);
+
+    //   if (cached) {
+    //     queryClient.setQueryData<GetMenegedRestaurantResponse>( // Atualizaça as informações da query no cache sem precisdar de uma nova requisição
+    //       ['menaged-restaurant'],
+    //       {
+    //         ...cached,
+    //         name,
+    //         description,
+    //       },
+    //     );
+    //   }
+    // },    
   });
 
   function handleUpdateProfile(data: StoreProfileSchema) {
