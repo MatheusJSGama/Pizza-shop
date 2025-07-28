@@ -30,6 +30,7 @@ const storeProfileSchema = z.object({
 type StoreProfileSchema = z.infer<typeof storeProfileSchema>;
 
 export function StoreProfileDialog() {
+
   const { data: managedRestaurant } = useQuery({
     queryFn: getMenegedRestaurant,
     queryKey: ['menaged-restaurant'],
@@ -84,16 +85,16 @@ export function StoreProfileDialog() {
     // },    
   });
 
-  function handleUpdateProfile(data: StoreProfileSchema) {
+  async function handleUpdateProfile(data: StoreProfileSchema) {
     try {
-      updateRestaurantProfile({
+      await updateRestaurantProfile({
         name: data.name,
         description: data.description,
       });
 
       toast.success('Perfil atualizado com sucesso!');
     } catch {
-      toast.error('Falha ao atualizar o perfil tente novamente!');
+      toast.error('Falha ao atualizar o perfil, tente novamente!');
     }
   }
 

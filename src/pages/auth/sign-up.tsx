@@ -38,8 +38,8 @@ export function SignUp() {
   const { mutateAsync: registerRestaurantFn } = useMutation({
     mutationFn: registerRestaurant,
   });
+
   async function handleSignUp(data: SignUpForm) {
-    console.log(data);
     await registerRestaurantFn({
       email: data.email,
       restaurantName: data.restaurantName,

@@ -31,6 +31,6 @@ export async function getOrders({ pageIndex, customerName, orderId, status }: Ge
             status
         }
     })
-
+    console.log(response.data);
     return response.data
 }

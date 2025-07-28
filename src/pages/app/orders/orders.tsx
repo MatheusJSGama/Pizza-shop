@@ -14,31 +14,35 @@ import { useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 
 export function Orders() {
-
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const orderId = searchParams.get('orderId');
   const customerName = searchParams.get('customerName');
   const status = searchParams.get('status');
 
   const pageIndex = z.coerce.number()
-    .transform(page => page -1)
-    .parse(searchParams.get('page') ?? '1')
+    .transform((page) => page - 1)
+    .parse(searchParams.get('page') ?? '1');
 
   const { data: result } = useQuery({
-    queryFn: ()=> getOrders({pageIndex, orderId, customerName, status: status === 'all' ? null : status}),
-    queryKey: ['orders', pageIndex, orderId, customerName, status]
-  })
+    queryFn: () =>
+      getOrders({
+        pageIndex,
+        orderId,
+        customerName,
+        status: status === 'all' ? null : status,
+      }),
+    queryKey: ['orders', pageIndex, orderId, customerName, status],
+  });
 
   console.log(result);
-  
 
-  function handlePaginate(pageIndex: number){
+  function handlePaginate(pageIndex: number) {
     setSearchParams((state) => {
-      state.set('page', (pageIndex + 1).toString())
+      state.set('page', (pageIndex + 1).toString());
 
-      return state
-    })
+      return state;
+    });
   }
 
   return (
@@ -63,23 +67,29 @@ export function Orders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {result && result.orders.map(order => {
-                  return (
-                    <OrdertableRow 
-                      key={order.orderId} 
-                      createdAt={order.createdAt}
-                      customerName={order.customerName}
-                      orderId={order.orderId}
-                      status={order.status}
-                      total={order.total}
-                    />
-                  )
-                })}
+                {result &&
+                  result.orders.map((order) => {
+                    return (
+                      <OrdertableRow
+                        key={order.orderId}
+                        createdAt={order.createdAt}
+                        customerName={order.customerName}
+                        orderId={order.orderId}
+                        status={order.status}
+                        total={order.total}
+                      />
+                    );
+                  })}
               </TableBody>
             </Table>
           </div>
           {result && (
-            <Pagination pageIndex={result.meta.pageIndex} totalCount={result.meta.totalCount} perPage={result.meta.perPage} onPageChange={handlePaginate} />
+            <Pagination
+              pageIndex={result.meta.pageIndex}
+              totalCount={result.meta.totalCount}
+              perPage={result.meta.perPage}
+              onPageChange={handlePaginate}
+            />
           )}
         </div>
       </div>
