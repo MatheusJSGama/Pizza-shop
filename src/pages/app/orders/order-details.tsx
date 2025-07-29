@@ -1,11 +1,11 @@
-import { getOrderDetails } from "@/api/get-order-details";
-import { OrderStatus } from "@/components/order.status";
+import { getOrderDetails } from '@/api/get-order-details';
+import { OrderStatus } from '@/components/order.status';
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -14,10 +14,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useQuery } from "@tanstack/react-query";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+} from '@/components/ui/table';
+import { useQuery } from '@tanstack/react-query';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export interface OrderDetailProps {
   orderId: string;
@@ -27,7 +27,7 @@ export interface OrderDetailProps {
 export function OrderDetails({ orderId, open }: OrderDetailProps) {
 
   const { data: order, isFetching } = useQuery({
-    queryKey: ["order", orderId],
+    queryKey: ['order', orderId],
     queryFn: () => getOrderDetails(orderId),
     enabled: open,
   });
@@ -125,15 +125,15 @@ export function OrderDetails({ orderId, open }: OrderDetailProps) {
                       {item.quantity}
                     </TableCell>
                     <TableCell className="text-right">
-                      {(item.priceInCents / 100).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
+                      {(item.priceInCents / 100).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
                       })}
                     </TableCell>
                     <TableCell className="text-right">
                       {(item.quantity * item.priceInCents / 100).toLocaleString(
-                        "pt-BR",
-                        { style: "currency", currency: "BRL" },
+                        'pt-BR',
+                        { style: 'currency', currency: 'BRL' },
                       )}
                     </TableCell>
                   </TableRow>
@@ -145,9 +145,9 @@ export function OrderDetails({ orderId, open }: OrderDetailProps) {
               <TableRow>
                 <TableCell colSpan={3}>Total do pedido</TableCell>
                 <TableCell className="text-right font-medium">
-                  {(order.totalInCents / 100).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
+                  {(order.totalInCents / 100).toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
                   })}
                 </TableCell>
               </TableRow>

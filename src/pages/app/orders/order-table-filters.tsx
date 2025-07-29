@@ -59,7 +59,7 @@ export function OrderTableFilters() {
       if (status) {
         state.set('status', status);
       } else {
-        state.delete('stauts');
+        state.delete('status');
       }
 
       state.set('page', '1');
@@ -122,7 +122,7 @@ export function OrderTableFilters() {
                 <SelectItem value='pending'>Pendente</SelectItem>
                 <SelectItem value='canceled'>Cancelado</SelectItem>
                 <SelectItem value='processing'>Em preparo</SelectItem>
-                <SelectItem value='deliverung'>Em entrega</SelectItem>
+                <SelectItem value='delivering'>Em entrega</SelectItem>
                 <SelectItem value='delivered'>Entregue</SelectItem>
               </SelectContent>
             </Select>

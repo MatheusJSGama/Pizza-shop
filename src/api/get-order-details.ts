@@ -1,9 +1,9 @@
-import { api } from "@/lib/axios";
+import { api } from '@/lib/axios';
 
 export interface GetOrderDetailsResponse {
     id: string;
     createdAt: string;
-    status: "pending" | "canceled" | "processing" | "delivering" | "delivered";
+    status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered';
     totalInCents: number;
     customer: {
         name: string;
