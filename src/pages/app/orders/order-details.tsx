@@ -26,7 +26,7 @@ export interface OrderDetailProps {
 
 export function OrderDetails({ orderId, open }: OrderDetailProps) {
 
-  const { data: order, isFetching } = useQuery({
+  const { data: order } = useQuery({
     queryKey: ['order', orderId],
     queryFn: () => getOrderDetails(orderId),
     enabled: open,
